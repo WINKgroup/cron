@@ -1,6 +1,6 @@
 {
   "name": "@winkgroup/cron",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cron management class",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -17,8 +17,8 @@
     "url": "git+https://github.com/WINKgroup/cron.git"
   },
   "keywords": [
-    "mongo",
-    "db"
+    "cron",
+    "interval"
   ],
   "author": "winksrl",
   "license": "MIT",
