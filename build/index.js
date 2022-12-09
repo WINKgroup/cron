@@ -35,6 +35,11 @@ var Cron = /** @class */ (function () {
             this.consoleLog.debug('cron stopped');
         this.lastUpdateAt = (new Date()).getTime();
     };
+    Cron.comeBackIn = function (milliseconds) {
+        var epoch = (new Date()).getTime();
+        epoch += milliseconds;
+        return (new Date(epoch)).toISOString();
+    };
     return Cron;
 }());
 exports.default = Cron;

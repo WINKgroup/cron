@@ -4,7 +4,7 @@ export default class Cron {
     everySeconds:number
     lastUpdateAt = 0
     private isRunning = false
-    consoleLog?:ConsoleLog
+    consoleLog:ConsoleLog
 
     constructor(everySeconds = 0, consoleLog?:ConsoleLog) {
         this.everySeconds = everySeconds
@@ -29,5 +29,11 @@ export default class Cron {
         this.isRunning = false
         if (this.consoleLog) this.consoleLog.debug('cron stopped')
         this.lastUpdateAt = (new Date()).getTime()
+    }
+
+    static comeBackIn(milliseconds:number) {
+        let epoch = (new Date()).getTime()
+        epoch += milliseconds
+        return (new Date(epoch)).toISOString()
     }
 }
