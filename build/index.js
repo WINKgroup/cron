@@ -7,7 +7,7 @@ var console_log_1 = __importDefault(require("@winkgroup/console-log"));
 var Cron = /** @class */ (function () {
     function Cron(everySeconds, consoleLog) {
         if (everySeconds === void 0) { everySeconds = 0; }
-        this.lastUpdateAt = 0;
+        this.lastRunAt = 0;
         this.isRunning = false;
         this.everySeconds = everySeconds;
         this.consoleLog = consoleLog ? consoleLog : new console_log_1.default({ prefix: "Cron" });
@@ -19,7 +19,7 @@ var Cron = /** @class */ (function () {
     });
     Cron.prototype.tryStartRun = function (force) {
         var now = (new Date()).getTime();
-        if (!force && (this.isRunning || (now - this.lastUpdateAt) / 1000 < this.everySeconds)) {
+        if (!force && (this.isRunning || (now - this.lastRunAt) / 1000 < this.everySeconds)) {
             if (this.consoleLog && this.isRunning)
                 this.consoleLog.debug('cron still running: not starting again');
             return false;
@@ -32,8 +32,8 @@ var Cron = /** @class */ (function () {
     Cron.prototype.runCompleted = function () {
         this.isRunning = false;
         if (this.consoleLog)
-            this.consoleLog.debug('cron stopped');
-        this.lastUpdateAt = (new Date()).getTime();
+            this.consoleLog.debug('cron ended running');
+        this.lastRunAt = (new Date()).getTime();
     };
     Cron.comeBackIn = function (milliseconds) {
         var epoch = (new Date()).getTime();

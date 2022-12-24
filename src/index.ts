@@ -2,7 +2,7 @@ import ConsoleLog from "@winkgroup/console-log"
 
 export default class Cron {
     everySeconds:number
-    lastUpdateAt = 0
+    lastRunAt = 0
     private isRunning = false
     consoleLog:ConsoleLog
 
@@ -15,7 +15,7 @@ export default class Cron {
 
     tryStartRun(force?:boolean) {
         const now = (new Date()).getTime()
-        if (!force && ( this.isRunning || (now - this.lastUpdateAt) / 1000 < this.everySeconds) ) {
+        if (!force && ( this.isRunning || (now - this.lastRunAt) / 1000 < this.everySeconds) ) {
             if (this.consoleLog && this.isRunning)
                 this.consoleLog.debug('cron still running: not starting again')
             return false
@@ -27,8 +27,8 @@ export default class Cron {
 
     runCompleted() {
         this.isRunning = false
-        if (this.consoleLog) this.consoleLog.debug('cron stopped')
-        this.lastUpdateAt = (new Date()).getTime()
+        if (this.consoleLog) this.consoleLog.debug('cron ended running')
+        this.lastRunAt = (new Date()).getTime()
     }
 
     static comeBackIn(milliseconds:number) {

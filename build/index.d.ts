@@ -1,7 +1,7 @@
 import ConsoleLog from "@winkgroup/console-log";
 export default class Cron {
     everySeconds: number;
-    lastUpdateAt: number;
+    lastRunAt: number;
     private isRunning;
     consoleLog: ConsoleLog;
     constructor(everySeconds?: number, consoleLog?: ConsoleLog);

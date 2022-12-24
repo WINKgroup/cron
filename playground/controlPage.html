@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Demo Cron Runner with WebSocket</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Demo Cron Runner with WebSocket</h1>
+    <p><i>open your browser console log to test it!</i></p>
+    <div>
+        <div><button id="start">START</button></div>
+        <div><button id="stop">STOP</button></div>
+        <div><button id="run">FORCE RUN</button></div>
+    </div>
+</body>
+<script>
+    const socket = io("http://127.0.0.1:8080/cron-runner")
+    socket.on('starting', () => console.log('starting!'))
+    socket.on('stopping', () => console.log('stopping!'))
+    socket.on('running', () => console.log('running!'))
+    
+    $('#start').click(() => socket.emit('start'))
+    $('#stop').click(() => socket.emit('stop'))
+    $('#run').click(() => socket.emit('run', {force: true}))
+</script>
+</html>
