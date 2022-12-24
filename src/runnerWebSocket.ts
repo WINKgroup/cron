@@ -1,29 +1,26 @@
 import CronRunner, { CronRunnerInput } from "./runner"
-import { Namespace, Server as IOServer } from 'socket.io'
+import { Namespace } from 'socket.io'
 import _ from "lodash"
 
 export interface CronRunnerWithSocketInput extends CronRunnerInput {
-    ioNamespace: string
+    ioNamespace: Namespace
 }
 
 export default abstract class CronRunnerWithWebSocket extends CronRunner {
     io:Namespace
 
-    constructor(everySeconds:number, ioServer:IOServer, inputOptions?:Partial<CronRunnerInput>) {
-        const options = _.defaults(inputOptions, {
-            ioNamespace: '/cron-runner'
-        })
+    constructor(everySeconds:number, ioNamespace:Namespace, inputOptions?:Partial<CronRunnerInput>) {
+        const options = _.defaults(inputOptions, {})
+
         const prevStartActive = options.startActive
         options.startActive = false
         super(everySeconds, options)
-        this.io = ioServer.of(options.ioNamespace)
-        this.setIo(ioServer, options.ioNamespace)
+        this.io = ioNamespace
+        this.setIo()
         if (prevStartActive) this.start()
     }
 
-    setIo(ioServer:IOServer, namespace = '/cron-runner') {
-        this.io = ioServer.of(namespace)
-
+    setIo() {
         this.io.use((socket, next) => {
             const token = socket.handshake.auth.token
             if (!this.isTokenValid(token)) next( new Error('access denied'))

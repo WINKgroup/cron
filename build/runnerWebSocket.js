@@ -22,24 +22,20 @@ var runner_1 = __importDefault(require("./runner"));
 var lodash_1 = __importDefault(require("lodash"));
 var CronRunnerWithWebSocket = /** @class */ (function (_super) {
     __extends(CronRunnerWithWebSocket, _super);
-    function CronRunnerWithWebSocket(everySeconds, ioServer, inputOptions) {
+    function CronRunnerWithWebSocket(everySeconds, ioNamespace, inputOptions) {
         var _this = this;
-        var options = lodash_1.default.defaults(inputOptions, {
-            ioNamespace: '/cron-runner'
-        });
+        var options = lodash_1.default.defaults(inputOptions, {});
         var prevStartActive = options.startActive;
         options.startActive = false;
         _this = _super.call(this, everySeconds, options) || this;
-        _this.io = ioServer.of(options.ioNamespace);
-        _this.setIo(ioServer, options.ioNamespace);
+        _this.io = ioNamespace;
+        _this.setIo();
         if (prevStartActive)
             _this.start();
         return _this;
     }
-    CronRunnerWithWebSocket.prototype.setIo = function (ioServer, namespace) {
+    CronRunnerWithWebSocket.prototype.setIo = function () {
         var _this = this;
-        if (namespace === void 0) { namespace = '/cron-runner'; }
-        this.io = ioServer.of(namespace);
         this.io.use(function (socket, next) {
             var token = socket.handshake.auth.token;
             if (!_this.isTokenValid(token))

@@ -1,12 +1,12 @@
 import CronRunner, { CronRunnerInput } from "./runner";
-import { Namespace, Server as IOServer } from 'socket.io';
+import { Namespace } from 'socket.io';
 export interface CronRunnerWithSocketInput extends CronRunnerInput {
-    ioNamespace: string;
+    ioNamespace: Namespace;
 }
 export default abstract class CronRunnerWithWebSocket extends CronRunner {
     io: Namespace;
-    constructor(everySeconds: number, ioServer: IOServer, inputOptions?: Partial<CronRunnerInput>);
-    setIo(ioServer: IOServer, namespace?: string): void;
+    constructor(everySeconds: number, ioNamespace: Namespace, inputOptions?: Partial<CronRunnerInput>);
+    setIo(): void;
     isTokenValid(token: string): boolean;
     run(force?: boolean): Promise<void>;
     start(): Promise<void>;
