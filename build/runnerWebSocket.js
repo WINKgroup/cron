@@ -30,7 +30,7 @@ var CronRunnerWithWebSocket = /** @class */ (function (_super) {
         _this = _super.call(this, everySeconds, options) || this;
         _this.io = ioNamespace;
         _this.setIo();
-        if (prevStartActive)
+        if (prevStartActive !== false)
             _this.start();
         return _this;
     }

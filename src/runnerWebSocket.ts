@@ -17,7 +17,7 @@ export default abstract class CronRunnerWithWebSocket extends CronRunner {
         super(everySeconds, options)
         this.io = ioNamespace
         this.setIo()
-        if (prevStartActive) this.start()
+        if (prevStartActive !== false) this.start()
     }
 
     setIo() {
