@@ -6,10 +6,12 @@
 	],
 	"settings": {
 		"files.watcherExclude": {
-			"build/**": true
+			"dist/**": true,
+			"node_modules/**": true
 		},
 		"search.exclude": {
-			"build/**": true,
+			"dist/**": true,
+			"node_modules/**": true,
 			"package-lock.json": true
 		}
 	}
