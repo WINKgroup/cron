@@ -128,7 +128,7 @@ bouncing
 bouncing
 ...
 
-/*
+*/
 ```
 
 You can instantiate a ```Cron``` object with these params:
