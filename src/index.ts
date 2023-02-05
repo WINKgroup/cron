@@ -41,11 +41,38 @@ export default class Cron {
     this.lastRunAt = new Date().getTime();
   }
 
+  async runEventually(task:() => Promise<void>, force = false) {
+    if (!this.tryStartRun(force)) return;
+    await task();
+    this.runCompleted();
+  }
+
+  // expressed in seconds
+  nextRunIn() {
+    const now = new Date().getTime();
+    const nextRun = this.lastRunAt + this.everySeconds * 1000
+    return nextRun > now ? (nextRun - now) / 1000 : 0
+  }
+
+  async debounce(task:() => Promise<void>) {
+    const taskWrapper = async () => {
+      this.tryStartRun()
+      this.runCompleted()
+      await task()
+    }
+
+    const nextRun = this.nextRunIn()
+    if (nextRun === 0) taskWrapper()
+      else setTimeout( taskWrapper, nextRun * 1000 )
+  }
+
   static comeBackIn(milliseconds: number) {
     let epoch = new Date().getTime();
     epoch += milliseconds;
     return new Date(epoch).toISOString();
   }
 }
+
+
 
 export { CronRunnerState, CronRunner, CronRunnerInput, CronRunnerWithSocket, CronRunnerWithSocketInput }
