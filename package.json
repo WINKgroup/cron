@@ -12,7 +12,7 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "playground": "ts-node-dev playground/server.ts",
-    "format": "prettier --write 'src/**/*.ts'",
+    "format": "prettier --write 'src/**/*.ts' 'playground/**/*.ts'",
     "prepare": "npm run build",
     "postversion": "git push && git push --tags && npm publish"
   },

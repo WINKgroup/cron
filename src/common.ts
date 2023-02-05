@@ -1,6 +1,6 @@
 export interface CronRunnerState {
-  active: boolean;
-  running: boolean;
-  everySeconds: number;
-  lastRunAt: number;
+    active: boolean;
+    running: boolean;
+    everySeconds: number;
+    lastRunAt: number;
 }
