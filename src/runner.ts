@@ -38,7 +38,6 @@ export default abstract class CronRunner {
   }
 
   async run(force = false) {
-    if (typeof force === "undefined") force = this.forceRun;
     if (!this.cron.tryStartRun(force)) return;
     await this._run();
     this.cron.runCompleted();
@@ -52,7 +51,7 @@ export default abstract class CronRunner {
   async start() {
     if (!this._setup) await this.setup();
     this._interval = setInterval(
-      async () => this.run(),
+      async () => this.run(this.forceRun),
       this.cron.everySeconds * 1000
     );
     this._active = true;

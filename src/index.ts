@@ -20,6 +20,29 @@ export default class Cron {
     return this.isRunning;
   }
 
+    // expressed in seconds
+    nextRunIn() {
+      const now = new Date().getTime();
+      const nextRun = this.lastRunAt + this.everySeconds * 1000
+      return nextRun > now ? (nextRun - now) / 1000 : 0
+    }
+
+  /***
+   * every time you call debounce method the timer is trigger, next call should wait the cron time
+   * @return false => you can run your task, true => you should wait
+   */
+  debounce() {
+    if (this.isRunning) return true
+    const nextRun = this.nextRunIn()
+
+    if (nextRun === 0) {
+      this.lastRunAt = new Date().getTime()
+      return false
+    }
+    
+    return true
+  }
+
   tryStartRun(force?: boolean) {
     const now = new Date().getTime();
     if (
@@ -41,29 +64,10 @@ export default class Cron {
     this.lastRunAt = new Date().getTime();
   }
 
-  async runEventually(task:() => Promise<void>, force = false) {
+  async run(task:() => Promise<void>, force = false) {
     if (!this.tryStartRun(force)) return;
     await task();
     this.runCompleted();
-  }
-
-  // expressed in seconds
-  nextRunIn() {
-    const now = new Date().getTime();
-    const nextRun = this.lastRunAt + this.everySeconds * 1000
-    return nextRun > now ? (nextRun - now) / 1000 : 0
-  }
-
-  async debounce(task:() => Promise<void>) {
-    const taskWrapper = async () => {
-      this.tryStartRun()
-      this.runCompleted()
-      await task()
-    }
-
-    const nextRun = this.nextRunIn()
-    if (nextRun === 0) taskWrapper()
-      else setTimeout( taskWrapper, nextRun * 1000 )
   }
 
   static comeBackIn(milliseconds: number) {
