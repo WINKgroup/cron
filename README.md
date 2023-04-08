@@ -147,7 +147,7 @@ Here the list methods for ```Cron``` objects:
 - ```debounce() => boolean```: if false you can run a debounced task according to cooldown period you set as *everySeconds* attribute. If true you have to wait. Every time you call this method the *lastRunAt* is updated at the current time
 - ```run(task, [force]) => Promise<void>```: *task* is a function like this ```() => Promise<void>``` and it is called if the cooldown period is passed or you force the run with the second param
 - ```tryStartRun([force]) => boolean```: if true you can start your periodic job. When true, ```Cron``` object consider you will start your task, so it expects you conclude your task by calling ```runCompleted```. If you don't call ```runCompleted``` any other call to ```tryStartRun([force])``` will return *false*, assuming your previous task is still running. Forcing ```tryStartRun``` will always return *true*
-- ```runCompleted() => void```: used to notify ```Cron``` object you ended your task
+- ```runCompleted([abort = false]) => void```: used to notify ```Cron``` object you ended your task, if abort is true then current running will not be considered valid
 
 There is also a static method:
 - ```comeBackIn(milliseconds) => string```: it returns the ISOString of current time plus the number of milliseconds you set as parameter

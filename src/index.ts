@@ -61,10 +61,10 @@ export default class Cron {
         return true;
     }
 
-    runCompleted() {
+    runCompleted(abort = false) {
         this.isRunning = false;
-        if (this.consoleLog) this.consoleLog.debug('cron ended running');
-        this.lastRunAt = new Date().getTime();
+        this.consoleLog.debug(abort ? 'cron aborted' : 'cron ended running');
+        if (!abort) this.lastRunAt = new Date().getTime();
     }
 
     async run(task: () => Promise<void>, force = false) {
