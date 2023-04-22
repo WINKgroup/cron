@@ -4,6 +4,7 @@ import CronRunner, { CronRunnerInput } from './runner';
 import CronRunnerWithSocket, {
     CronRunnerWithSocketInput,
 } from './runnerWebSocket';
+import WaitFor, { WaitForOptions, waitForMs } from './waitFor';
 
 export default class Cron {
     everySeconds: number;
@@ -86,4 +87,7 @@ export {
     CronRunnerInput,
     CronRunnerWithSocket,
     CronRunnerWithSocketInput,
+    waitForMs,
+    WaitFor,
+    WaitForOptions,
 };

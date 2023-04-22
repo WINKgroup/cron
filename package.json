@@ -31,9 +31,9 @@
   },
   "homepage": "https://github.com/WINKgroup/cron#readme",
   "devDependencies": {
-    "@types/lodash": "^4.14.192",
-    "@types/node": "^18.15.11",
-    "@winkgroup/webserver": "^1.2.2",
+    "@types/lodash": "^4.14.194",
+    "@types/node": "^18.15.13",
+    "@winkgroup/webserver": "^2.0.1",
     "prettier": "^2.8.7",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
