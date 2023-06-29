@@ -1,6 +1,6 @@
 {
   "name": "@winkgroup/cron",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Cron management class",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
