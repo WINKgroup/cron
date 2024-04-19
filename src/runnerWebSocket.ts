@@ -12,7 +12,7 @@ export default abstract class CronRunnerWithWebSocket extends CronRunner {
     constructor(
         everySeconds: number,
         ioNamespace: Namespace,
-        inputOptions?: Partial<CronRunnerInput>
+        inputOptions?: Partial<CronRunnerInput>,
     ) {
         const options = _.defaults(inputOptions, {});
 

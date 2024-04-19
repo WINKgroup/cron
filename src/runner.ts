@@ -1,10 +1,9 @@
 import ConsoleLog from '@winkgroup/console-log';
 import _ from 'lodash';
-import Cron from '.';
+import Cron, { CronOptions } from '.';
 import { CronRunnerState } from './common';
 
-export interface CronRunnerInput {
-    consoleLog: ConsoleLog;
+export interface CronRunnerInput extends Partial<CronOptions> {
     startActive: boolean;
     forceRun: boolean;
 }
@@ -28,7 +27,7 @@ export default abstract class CronRunner {
         this.consoleLog = options.consoleLog
             ? options.consoleLog
             : new ConsoleLog({ prefix: 'CronRunner' });
-        this.cron = new Cron(everySeconds, this.consoleLog);
+        this.cron = new Cron(everySeconds, options);
         if (this._active) this.start();
     }
 
@@ -52,7 +51,7 @@ export default abstract class CronRunner {
         if (!this._setup) await this.setup();
         this._interval = setInterval(
             async () => this.run(this.forceRun),
-            this.cron.everySeconds * 1000
+            this.cron.defaultEverySeconds * 1000,
         );
         this._active = true;
         this.consoleLog.debug('cron activated');
@@ -71,6 +70,7 @@ export default abstract class CronRunner {
             active: this._active,
             running: this.cron.running,
             everySeconds: this.cron.everySeconds,
+            defaultEverySeconds: this.cron.defaultEverySeconds,
             lastRunAt: this.cron.lastRunAt,
         };
 

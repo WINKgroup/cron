@@ -16,7 +16,7 @@ const app = express();
 
 prepareApp(app, 'myApp');
 app.get('/', (req: any, res: any) =>
-    res.sendFile(path.join(__dirname, './controlPage.html'))
+    res.sendFile(path.join(__dirname, './controlPage.html')),
 );
 
 const server = http.createServer(app);
@@ -35,5 +35,5 @@ new DemoCronRunner(5, ioApp.of('/cron-runner'), {
 
 server.listen(8080);
 console.log(
-    'VISIT http://127.0.0.1:8080/ and open your browser console log to test it!'
+    'VISIT http://127.0.0.1:8080/ and open your browser console log to test it!',
 );

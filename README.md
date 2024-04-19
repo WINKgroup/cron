@@ -42,6 +42,8 @@ super contructor has these params:
 ```super(everySeconds, [options])```
 options in the constructor are:
 - *consoleLog*: an instance of [ConsoleLog](https://github.com/WINKgroup/console-log) class
+- *maxEverySeconds*: in case of aborted task you can set a maxEverySeconds param. In this case everytime the task is aborted it will double the time for the next try until it will reach the maxEverySeconds time. This param is not considered if you set the *backoffFunction*
+- *backoffFunction* : you can pass an option to set a backoff function in case of aborted task. Signature of the function has to be: ```(currentWaitingSeconds: number) => number```, where the result is the next periood to wait
 - *startActive*: if true the cron is active at start (default: true)
 - *forceRun*: if true it runs the periodic task no matter if the previous task is not completed (default: false)
 
@@ -54,10 +56,11 @@ other inherited methods you can overload are:
 - ```getState() => CronRunnerState```: CronRunnerState is an object like this
 ```js
 {
-  active: boolean;
-  running: boolean;
-  everySeconds: number;
-  lastRunAt: number;
+    active: boolean;
+    running: boolean;
+    everySeconds: number;
+    defaultEverySeconds: number;
+    lastRunAt: number;
 }
 ```
 
@@ -132,14 +135,18 @@ bouncing
 ```
 
 You can instantiate a ```Cron``` object with these params:
-``` new Cron([everySeconds], [consoleLog]) ```
+``` new Cron([everySeconds], [options]) ```
 - *everySeconds*: cooldown between the end of a task and the start of the following one (default: 0)
-- *consoleLog*: an instance of [ConsoleLog](https://github.com/WINKgroup/console-log) class
+options in the constructor are:
+    - *consoleLog*: an instance of [ConsoleLog](https://github.com/WINKgroup/console-log) class
+    - *maxEverySeconds*: in case of aborted task you can set a maxEverySeconds param. In this case everytime the task is aborted it will double the time for the next try until it will reach the maxEverySeconds time. This param is not considered if you set the *backoffFunction*
+    - *backoffFunction* : you can pass an option to set a backoff function in case of aborted task. Signature of the function has to be: ```(currentWaitingSeconds: number) => number```, where the result is the next periood to wait
 
 Here the list of attributes for ```Cron``` objects:
 - *everySeconds*: cooldown between the end of a task and the start of the following one
 - *lastRunAt*: epoch coming from Date().getTime(). You can use this to force a different cooldown
-- consoleLog: an instance of [ConsoleLog](https://github.com/WINKgroup/console-log) class
+- *consoleLog*: an instance of [ConsoleLog](https://github.com/WINKgroup/console-log) class
+- *backoffFunction*: as described above
 
 Here the list methods for ```Cron``` objects:
 - ```running() => boolean```: it says if a task is running

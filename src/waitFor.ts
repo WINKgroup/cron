@@ -22,7 +22,7 @@ export default class WaitFor {
 
     constructor(
         isCompleted: () => boolean,
-        inputOptions?: Partial<WaitForOptions>
+        inputOptions?: Partial<WaitForOptions>,
     ) {
         const options: WaitForOptions = _.defaults(inputOptions, {
             timeoutInSeconds: 0,
@@ -58,7 +58,7 @@ export default class WaitFor {
 
     static when(
         isCompleted: () => boolean,
-        inputOptions?: Partial<WaitForOptions>
+        inputOptions?: Partial<WaitForOptions>,
     ) {
         const waitFor = new WaitFor(isCompleted, inputOptions);
         return waitFor.run();

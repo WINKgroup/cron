@@ -5,18 +5,40 @@ import CronRunnerWithSocket, {
     CronRunnerWithSocketInput,
 } from './runnerWebSocket';
 import WaitFor, { WaitForOptions, waitForMs } from './waitFor';
+import _ from 'lodash';
+import { getDuration } from '@winkgroup/misc';
+
+export interface CronOptions {
+    consoleLog: ConsoleLog;
+    backoffFunction?: (currentWaitingSeconds: number) => number;
+    maxEverySeconds?: number;
+}
 
 export default class Cron {
+    defaultEverySeconds: number;
     everySeconds: number;
+    backoffFunction?: (currentWaitingSeconds: number) => number;
     lastRunAt = 0;
     private isRunning = false;
     consoleLog: ConsoleLog;
 
-    constructor(everySeconds = 0, consoleLog?: ConsoleLog) {
+    constructor(everySeconds = 0, inputOptions?: Partial<CronOptions>) {
         this.everySeconds = everySeconds;
-        this.consoleLog = consoleLog
-            ? consoleLog
-            : new ConsoleLog({ prefix: 'Cron' });
+        this.defaultEverySeconds = everySeconds;
+        const options: CronOptions = _.defaults(inputOptions, {
+            consoleLog: new ConsoleLog({ prefix: 'Cron' }),
+        });
+
+        this.consoleLog = options.consoleLog;
+        if (options.backoffFunction)
+            this.backoffFunction = options.backoffFunction;
+        else if (options.maxEverySeconds)
+            this.backoffFunction = (currentWaitingSeconds: number) => {
+                return Math.min(
+                    currentWaitingSeconds * currentWaitingSeconds,
+                    options.maxEverySeconds!,
+                );
+            };
     }
 
     get running() {
@@ -64,13 +86,30 @@ export default class Cron {
 
     runCompleted(abort = false) {
         this.isRunning = false;
-        this.consoleLog.debug(abort ? 'cron aborted' : 'cron ended running');
-        if (!abort) this.lastRunAt = new Date().getTime();
+        this.consoleLog.debug(abort ? 'task aborted' : 'task completed');
+        this.lastRunAt = new Date().getTime();
+        if (abort && this.backoffFunction) {
+            this.everySeconds = this.backoffFunction(this.everySeconds);
+            this.consoleLog.debug(
+                'waiting time updated to: ' + getDuration(this.everySeconds),
+            );
+        } else if (this.everySeconds !== this.defaultEverySeconds) {
+            this.everySeconds = this.defaultEverySeconds;
+            this.consoleLog.debug(
+                'resetting waiting time to: ' + getDuration(this.everySeconds),
+            );
+        }
     }
 
     async run(task: () => Promise<void>, force = false) {
         if (!this.tryStartRun(force)) return;
-        await task();
+        try {
+            await task();
+        } catch (e) {
+            this.runCompleted(true);
+            throw e;
+        }
+
         this.runCompleted();
     }
 

@@ -2,3 +2,5 @@ yarn.lock
 dist
 node_modules
 
+pnpm-lock.yaml
+.DS_Store
