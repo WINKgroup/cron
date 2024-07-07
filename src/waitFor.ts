@@ -18,7 +18,7 @@ export default class WaitFor {
     readonly timeoutInSeconds: number;
     readonly everyMilliseconds: number;
     dontThrowError: boolean;
-    protected _interval?: NodeJS.Timer;
+    protected _interval?: NodeJS.Timeout;
 
     constructor(
         isCompleted: () => boolean,
@@ -42,15 +42,23 @@ export default class WaitFor {
             : 0;
 
         return new Promise<boolean>((resolve, reject) => {
+            const end = (result: boolean) => {
+                if (this._interval) clearInterval(this._interval)
+                resolve(result)
+            }
+
             if (this.isCompleted()) {
-                resolve(true);
+                end(true);
                 return;
             }
             this._interval = setInterval(() => {
-                if (this.isCompleted()) resolve(true);
+                if (this.isCompleted()) end(true);
                 else if (limit && limit < new Date().getTime()) {
-                    if (this.dontThrowError) resolve(false);
-                    else reject();
+                    if (this.dontThrowError) end(false);
+                    else {
+                        if (this._interval) clearInterval(this._interval)
+                        reject();
+                    }
                 }
             }, this.everyMilliseconds);
         });
