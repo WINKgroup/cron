@@ -6,8 +6,9 @@ import CronRunnerWithSocket, {
 } from './runnerWebSocket';
 import WaitFor, { WaitForOptions, waitForMs } from './waitFor';
 
+export default Cron;
+
 export {
-    Cron,
     CronOptions,
     CronRunner,
     CronRunnerInput,
