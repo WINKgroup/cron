@@ -1,7 +1,7 @@
 import ConsoleLog from '@winkgroup/console-log';
 import _ from 'lodash';
-import Cron, { CronOptions } from '.';
 import { CronRunnerState } from './common';
+import Cron, { CronOptions } from './cron';
 
 export interface CronRunnerInput extends Partial<CronOptions> {
     startActive: boolean;
@@ -49,6 +49,10 @@ export default abstract class CronRunner {
 
     async start() {
         if (!this._setup) await this.setup();
+        if (this._active) {
+            this.consoleLog.warn('cron already started, not starting it again');
+            return;
+        }
         this._interval = setInterval(
             async () => this.run(this.forceRun),
             this.cron.defaultEverySeconds * 1000,

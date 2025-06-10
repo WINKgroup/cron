@@ -43,9 +43,9 @@ export default class WaitFor {
 
         return new Promise<boolean>((resolve, reject) => {
             const end = (result: boolean) => {
-                if (this._interval) clearInterval(this._interval)
-                resolve(result)
-            }
+                if (this._interval) clearInterval(this._interval);
+                resolve(result);
+            };
 
             if (this.isCompleted()) {
                 end(true);
@@ -56,7 +56,7 @@ export default class WaitFor {
                 else if (limit && limit < new Date().getTime()) {
                     if (this.dontThrowError) end(false);
                     else {
-                        if (this._interval) clearInterval(this._interval)
+                        if (this._interval) clearInterval(this._interval);
                         reject();
                     }
                 }

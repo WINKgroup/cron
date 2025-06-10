@@ -112,7 +112,7 @@ import Cron from '@winkgroup/cron'
 const cron3 = new Cron(3)
 
 setInterval(async () => {
-    if (cron2.debounce()) {
+    if (cron3.debounce()) {
         console.log('bouncing')
         return
     }
