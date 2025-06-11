@@ -9,7 +9,7 @@ export interface CronRunnerInput extends Partial<CronOptions> {
 }
 
 export default abstract class CronRunner {
-    protected _active: boolean;
+    protected _active = false;
     protected _setup = false;
     protected _interval?: any;
     forceRun: boolean;
@@ -22,13 +22,12 @@ export default abstract class CronRunner {
             forceRun: false,
         });
 
-        this._active = options.startActive;
         this.forceRun = options.forceRun;
         this.consoleLog = options.consoleLog
             ? options.consoleLog
             : new ConsoleLog({ prefix: 'CronRunner' });
         this.cron = new Cron(everySeconds, options);
-        if (this._active) this.start();
+        if (options.startActive) this.start();
     }
 
     protected abstract _run(): Promise<void>;
