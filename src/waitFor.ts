@@ -57,7 +57,7 @@ export default class WaitFor {
                     if (this.dontThrowError) end(false);
                     else {
                         if (this._interval) clearInterval(this._interval);
-                        reject();
+                        reject('timeout');
                     }
                 }
             }, this.everyMilliseconds);
