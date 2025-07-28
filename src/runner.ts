@@ -2,10 +2,17 @@ import ConsoleLog from '@winkgroup/console-log';
 import _ from 'lodash';
 import { CronRunnerState } from './common';
 import Cron, { CronOptions } from './cron';
+import WaitFor from './waitFor';
 
 export interface CronRunnerInput extends Partial<CronOptions> {
     startActive: boolean;
     forceRun: boolean;
+}
+
+export interface CronRunnerStopOptions {
+    waitUntilFinished: boolean;
+    waitingPingFn: () => void;
+    timeoutInSeconds: number;
 }
 
 export default abstract class CronRunner {
@@ -61,11 +68,30 @@ export default abstract class CronRunner {
         this.run();
     }
 
-    async stop(force = false) {
+    async stop(inputOptions?: CronRunnerStopOptions) {
+        const options = _.defaults(inputOptions, {
+            waitUntilFinished: true,
+        });
         clearInterval(this._interval);
         this._interval = undefined;
         this._active = false;
         this.consoleLog.debug('cron deactivated');
+        if (!options.waitUntilFinished) return true;
+        this.consoleLog.debug('waiting for cron to finish running...');
+        const finished = await WaitFor.when(
+            () => {
+                options?.waitingPingFn?.();
+                return !this.cron.running;
+            },
+            {
+                timeoutInSeconds: options?.timeoutInSeconds,
+                dontThrowError: true,
+            },
+        );
+        this.consoleLog.debug(
+            finished ? 'cron finished' : 'cron still running',
+        );
+        return finished;
     }
 
     getState() {
